@@ -18,8 +18,8 @@
 - A conta digital Dock nunca poderá ter o saldo negativo
 
 
-# To-DO
-- [ ] Criar script do banco
+# Todo
+- [x] Criar script do banco
 - [ ] Criar endpoints PORTADORES
 - [ ] Criar endpoints CONTAS
 - [ ] Criar endpoints TRANSAÇÕES

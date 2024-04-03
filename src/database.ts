@@ -7,7 +7,7 @@ export const config: Knex.Config = {
     port: 3333,
     user: 'root',
     password: 'root',
-    database: 'teste',
+    database: 'digital_account',
   },
 }
 
