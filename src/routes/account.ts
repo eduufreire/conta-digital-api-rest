@@ -7,6 +7,8 @@ import { checkBodyTransaction } from '../middlewares/checkBodyTransaction'
 import moment from 'moment-timezone'
 import { TransactionService } from '../services/transacoes'
 
+import z from 'zod'
+
 const router = express.Router()
 const accountService = new AccountService()
 const transactionService = new TransactionService()
@@ -21,6 +23,36 @@ router.get('/balance/:cpf', async (req, res) => {
     res.status(200).send(result)
   } catch (err) {
     res.status(404).send({
+      error: err.message,
+    })
+  }
+})
+
+router.get('/extract/:cpf', async (req, res) => {
+  try {
+    const cpfValid = checkParamCpfIsValid(req, res)
+
+    const createQueryParamsValid = z.coerce.date()
+
+    const validDateInicio = createQueryParamsValid.safeParse(
+      req.query.inicio,
+    ).success
+    const validDateFim = createQueryParamsValid.safeParse(req.query.fim).success
+
+    if (!validDateInicio || !validDateFim) {
+      throw new Error('Invalid date')
+    }
+
+    const extractDTO = {
+      cpf: cpfValid,
+      inicio: req.query.inicio,
+      fim: req.query.fim,
+    }
+
+    const response = await accountService.extractAccount(extractDTO)
+    res.status(200).send(response)
+  } catch (err) {
+    res.status(400).send({
       error: err.message,
     })
   }

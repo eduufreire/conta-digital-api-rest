@@ -8,7 +8,7 @@ class AccountModel {
 
   async consultBalance(cpf: string) {
     await this.checkAccountExists(cpf)
-    await this.check(cpf)
+    await this.checkAccountIsActive(cpf)
     return await knex('carrier_account')
       .where('fkCpf', cpf)
       .select('balance', 'number', 'agency')
@@ -19,6 +19,17 @@ class AccountModel {
     await knex('carrier_account')
       .where('fkCpf', dataUpdate.cpf)
       .update('isActive', dataUpdate.action)
+  }
+
+  async extractAccountBetweenDate(extract) {
+    await this.checkAccountExists(extract.cpf)
+    return await knex('transaction_account')
+      .where('fkCpf', extract.cpf)
+      .whereRaw('CAST(created_at as DATE) between ? and ?', [
+        extract.inicio,
+        extract.fim,
+      ])
+      .select('type', 'amount', 'created_at')
   }
 
   private async checkAccountExists(cpf: string) {

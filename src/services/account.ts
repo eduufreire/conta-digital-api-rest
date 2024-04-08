@@ -27,6 +27,11 @@ class AccountService {
     await accountModel.statusChange(dataUpdate)
   }
 
+  async extractAccount(extract) {
+    extract.cpf = this.checkCpfIsValid(extract.cpf)
+    return await accountModel.extractAccountBetweenDate(extract)
+  }
+
   private checkCpfIsValid(cpf: string) {
     const cpfFormated = CPF.Strip(cpf)
     const cpfValid = CPF.Validate(cpfFormated)
