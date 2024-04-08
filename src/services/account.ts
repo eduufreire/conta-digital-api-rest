@@ -17,14 +17,24 @@ class AccountService {
   }
 
   async balance(cpf: string) {
+    const cpfFormated = this.checkCpfIsValid(cpf)
+    return await accountModel.consultBalance(cpfFormated)
+  }
+
+  async statusChange(dataUpdate) {
+    dataUpdate.cpf = this.checkCpfIsValid(dataUpdate.cpf)
+    dataUpdate.action = dataUpdate.action === 'enable' ? 1 : 0
+    await accountModel.statusChange(dataUpdate)
+  }
+
+  private checkCpfIsValid(cpf: string) {
     const cpfFormated = CPF.Strip(cpf)
     const cpfValid = CPF.Validate(cpfFormated)
 
     if (!cpfValid) {
       throw new Error('CPF is not valid')
     }
-
-    return await accountModel.consultBalance(cpfFormated)
+    return cpfFormated
   }
 }
 

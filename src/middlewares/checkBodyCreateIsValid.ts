@@ -1,6 +1,6 @@
 import z from 'zod'
 
-export async function checkBodyIsValid(req, res) {
+export function checkBodyIsValid(req, res) {
   const createCarrierBodySchema = z.object({
     cpf: z.string().max(11),
     nome: z.string(),

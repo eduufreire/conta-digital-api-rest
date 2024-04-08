@@ -1,6 +1,6 @@
 import z from 'zod'
 
-export async function checkParamCpfIsValid(req, res) {
+export function checkParamCpfIsValid(req, res) {
   const schemaParam = z.string().max(11)
 
   const _param = schemaParam.safeParse(req.params.cpf)
