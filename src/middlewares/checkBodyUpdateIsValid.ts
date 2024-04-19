@@ -1,6 +1,8 @@
 import z from 'zod'
+import { CarrierStatusChange } from '../interfaces/Carrier'
 
-export function checkBodyUpdateIsValid(req, res) {
+export function checkBodyUpdateIsValid(req, res): CarrierStatusChange | undefined {
+
   const bodyUpdateSchema = z.object({
     cpf: z.string().max(11),
     action: z.enum(['enable', 'disable']),
@@ -13,6 +15,11 @@ export function checkBodyUpdateIsValid(req, res) {
       error: _body.error.issues[0],
     })
   } else {
-    return _body.data
+    const dados: CarrierStatusChange = {
+      cpf: _body.data.cpf,
+      action: _body.data.action,
+    }
+
+    return dados
   }
 }

@@ -1,6 +1,7 @@
 import z from 'zod'
+import { CarrierData } from '../interfaces/Carrier'
 
-export function checkBodyIsValid(req, res) {
+export function checkBodyIsValid(req, res): CarrierData | undefined {
   const createCarrierBodySchema = z.object({
     cpf: z.string().max(11),
     nome: z.string(),
@@ -13,6 +14,11 @@ export function checkBodyIsValid(req, res) {
       error: _body.error.issues[0],
     })
   } else {
-    return _body.data
+    const dados: CarrierData = {
+      cpf: _body.data.cpf,
+      nome: _body.data.nome,
+    }
+
+    return dados
   }
 }

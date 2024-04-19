@@ -1,21 +1,24 @@
 import { knex } from '../database'
+import { CarrierData, CarrierStatusChange } from '../interfaces/Carrier'
+import { CarrierRepository } from '../interfaces/CarrierRepository'
 
-class CarrierModel {
-  async create(carrierDTO) {
-    await this.verifyCpfIsRegistred(carrierDTO.cpf)
+class CarrierModel implements CarrierRepository {
+  async create(carrierData: CarrierData) {
+    await this.verifyCpfIsRegistred(carrierData.cpf)
     await knex('carrier').insert({
-      name: carrierDTO.nome,
-      cpf: carrierDTO.cpf,
+      name: carrierData.nome,
+      cpf: carrierData.cpf,
       isActive: 1,
       created_at: knex.fn.now(6),
     })
   }
 
-  async statusChange(carrierDTO) {
-    await this.checkCpfExists(carrierDTO.cpf)
-    await knex('carrier')
-      .where('cpf', carrierDTO.cpf)
-      .update('isActive', carrierDTO.action)
+  async statusChange(carrierStatusChange: CarrierStatusChange) {
+    await this.checkCpfExists(carrierStatusChange.cpf)
+    const logTeste = await knex('carrier')
+      .where('cpf', carrierStatusChange.cpf)
+      .update('isActive', carrierStatusChange.action)
+    console.log('exibindo retorno do statusChagne', logTeste)
   }
 
   private async verifyCpfIsRegistred(cpf: string) {

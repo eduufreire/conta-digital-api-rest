@@ -1,26 +1,35 @@
 import { CPF } from '@julioakira/cpf-cnpj-utils'
-import { CarrierModel } from '../models/carrier'
+import { CarrierData, CarrierStatusChange } from '../interfaces/Carrier'
+import { CarrierRepository } from '../interfaces/CarrierRepository'
 import { AccountService } from '../services/account'
 
-const carrierModel = new CarrierModel()
-const accountService = new AccountService()
-
 class CarrierService {
-  async create(carrierDTO) {
-    carrierDTO.cpf = this.cpfValidate(carrierDTO.cpf)
+  _carrierRepository: CarrierRepository
+  _accountService: AccountService
 
-    await carrierModel.create(carrierDTO)
-    await accountService.create(carrierDTO.cpf)
+  constructor(
+    carrierRepository: CarrierRepository,
+    accountService: AccountService,
+  ) {
+    this._carrierRepository = carrierRepository
+    this._accountService = accountService
   }
 
-  async statusChange(carrierDTO) {
-    carrierDTO.cpf = this.cpfValidate(carrierDTO.cpf)
-    carrierDTO.action = carrierDTO.action === 'enable' ? 1 : 0
-    await carrierModel.statusChange(carrierDTO)
-    await accountService.statusChange(carrierDTO)
+  async create(carrierData: CarrierData) {
+    carrierData.cpf = this.cpfValidate(carrierData.cpf)
+
+    this._carrierRepository.create(carrierData)
+    await this._accountService.create(carrierData.cpf)
   }
 
-  private cpfValidate(cpf: string) {
+  async statusChange(carrierStatusChange: CarrierStatusChange) {
+    carrierStatusChange.cpf = this.cpfValidate(carrierStatusChange.cpf)
+  
+    this._carrierRepository.statusChange(carrierStatusChange)
+    await this._accountService.statusChange(carrierStatusChange)
+  }
+
+  private cpfValidate(cpf: string): string {
     const cpfFormated = CPF.Strip(cpf)
     const cpfValid = CPF.Validate(cpfFormated)
     if (!cpfValid) {
