@@ -18,13 +18,13 @@ class CarrierService {
   async create(carrierData: CarrierData) {
     carrierData.cpf = this.cpfValidate(carrierData.cpf)
 
-    this._carrierRepository.create(carrierData)
+    await this._carrierRepository.create(carrierData)
     await this._accountService.create(carrierData.cpf)
   }
 
   async statusChange(carrierStatusChange: CarrierStatusChange) {
     carrierStatusChange.cpf = this.cpfValidate(carrierStatusChange.cpf)
-  
+
     this._carrierRepository.statusChange(carrierStatusChange)
     await this._accountService.statusChange(carrierStatusChange)
   }

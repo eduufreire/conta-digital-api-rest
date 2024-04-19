@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/app.ts",
-    "lint": "eslint src --ext .ts --fix"
+    "dev": "tsx watch src/app.ts"
   },
   "keywords": [],
   "author": "",

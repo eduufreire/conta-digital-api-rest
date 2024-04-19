@@ -15,10 +15,9 @@ class CarrierModel implements CarrierRepository {
 
   async statusChange(carrierStatusChange: CarrierStatusChange) {
     await this.checkCpfExists(carrierStatusChange.cpf)
-    const logTeste = await knex('carrier')
+    await knex('carrier')
       .where('cpf', carrierStatusChange.cpf)
       .update('isActive', carrierStatusChange.action)
-    console.log('exibindo retorno do statusChagne', logTeste)
   }
 
   private async verifyCpfIsRegistred(cpf: string) {
