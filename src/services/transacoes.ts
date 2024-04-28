@@ -1,22 +1,21 @@
-import { CPF } from '@julioakira/cpf-cnpj-utils'
-import { TransactionModel } from '../models/transacoes'
-
-const transactionModel = new TransactionModel()
+import { IPayloadTransaction } from '../interfaces/transaction/ITransaction'
+import { ITransactionRepository } from '../interfaces/transaction/ITransactioRepository'
+import { cpfValidate } from '../utils/CpfValidate'
 
 class TransactionService {
-  async create(transaction) {
-    transaction.cpf = this.cpfValidate(transaction.cpf)
-    await transactionModel.create(transaction)
+
+  _transactionRepository: ITransactionRepository
+
+  constructor(transactionRepository: ITransactionRepository){
+    this._transactionRepository = transactionRepository
   }
 
-  private cpfValidate(cpf: string) {
-    const cpfFormated = CPF.Strip(cpf)
-    const cpfValid = CPF.Validate(cpfFormated)
-    if (!cpfValid) {
-      throw new Error('CPF is not valid')
-    }
-    return cpfFormated
+  async create(payload: IPayloadTransaction): Promise<void> {
+    payload.cpf = cpfValidate(payload.cpf)
+    await this._transactionRepository.create(payload)
   }
+
+  
 }
 
 export { TransactionService }

@@ -1,38 +1,51 @@
 import { knex } from '../database'
 import moment from 'moment-timezone'
+import { ITransactionRepository } from '../interfaces/transaction/ITransactioRepository'
+import { IPayloadTransaction } from '../interfaces/transaction/ITransaction'
 
-class TransactionModel {
-  async create(transaction) {
-    await this.checkAccountExists(transaction.cpf)
-    await this.checkAccountIsActive(transaction.cpf)
-    if (transaction.type === 'withdraw') {
-      await this.checkDiaryLimit(transaction)
-      await this.checkBalanceAccount(transaction.cpf, transaction.amount)
+class TransactionModel implements ITransactionRepository{
+
+  async create(payload: IPayloadTransaction) {
+
+    await this.checkAccountExists(payload.cpf)
+    await this.checkAccountIsActive(payload.cpf)
+
+    if (payload.type === 'withdraw') {
+      await this.checkDiaryLimit(payload)
+      await this.checkBalanceAccount(payload.cpf, payload.amount)
     }
 
     await knex('transaction_account').insert({
-      fkCpf: transaction.cpf,
-      type: transaction.type,
-      amount: transaction.amount,
+      fkCpf: payload.cpf,
+      type: payload.type,
+      amount: payload.amount,
       created_at: knex.fn.now(6),
     })
 
-    await this.updateBalance(transaction)
+    await this.updateBalance(payload)
   }
 
-  private async updateBalance(transactionDTO) {
-    const response = await knex('carrier_account')
-      .where('fkCpf', transactionDTO.cpf)
-      .select('balance')
+  private async updateBalance(payload: IPayloadTransaction) {
+
+    const currentBalance: number = await this.getCurrentBalance(payload.cpf)
 
     const totalBalance =
-      transactionDTO.type === 'withdraw'
-        ? transactionDTO.amount - parseFloat(response[0].balance)
-        : transactionDTO.amount + parseFloat(response[0].balance)
+      payload.type === 'withdraw'
+        ? payload.amount - currentBalance
+        : payload.amount + currentBalance
 
     await knex('carrier_account')
-      .where('fkCpf', transactionDTO.cpf)
+      .where('fkCpf', payload.cpf)
       .update('balance', totalBalance)
+  }
+
+  private async getCurrentBalance(cpf: string): Promise<number> {
+
+    const response: number = await knex('carrier_account')
+      .where('fkCpf', cpf)
+      .select('balance')
+
+    return parseFloat(response[0])
   }
 
   private async checkAccountExists(cpf: string) {
@@ -78,6 +91,7 @@ class TransactionModel {
       throw new Error('Insufficient funds')
     }
   }
+
 }
 
 export { TransactionModel }

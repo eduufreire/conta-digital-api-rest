@@ -1,42 +1,43 @@
-import { CPF } from '@julioakira/cpf-cnpj-utils'
-import { CarrierData, CarrierStatusChange } from '../interfaces/Carrier'
-import { CarrierRepository } from '../interfaces/CarrierRepository'
+import { ICarrierData, IStatusChange, IPayloadStatusChange } from '../interfaces/carrier/ICarrier'
+import { ICarrierRepository } from '../interfaces/carrier/ICarrierRepository'
 import { AccountService } from '../services/account'
+import { cpfValidate } from '../utils/CpfValidate'
+
 
 class CarrierService {
-  _carrierRepository: CarrierRepository
+
+  _carrierRepository: ICarrierRepository
   _accountService: AccountService
 
   constructor(
-    carrierRepository: CarrierRepository,
+    carrierRepository: ICarrierRepository,
     accountService: AccountService,
   ) {
     this._carrierRepository = carrierRepository
     this._accountService = accountService
   }
 
-  async create(carrierData: CarrierData) {
-    carrierData.cpf = this.cpfValidate(carrierData.cpf)
+  async create(carrierData: ICarrierData) {
+    carrierData.cpf = cpfValidate(carrierData.cpf)
 
     await this._carrierRepository.create(carrierData)
     await this._accountService.create(carrierData.cpf)
+
   }
 
-  async statusChange(carrierStatusChange: CarrierStatusChange) {
-    carrierStatusChange.cpf = this.cpfValidate(carrierStatusChange.cpf)
+  async statusChange(carrierStatusChange: IStatusChange) {
+    let cfpValidate: string = cpfValidate(carrierStatusChange.cpf)
+    let checkAction: 0 | 1 = carrierStatusChange.action == 'disable' ? 0 : 1
 
-    this._carrierRepository.statusChange(carrierStatusChange)
+    const payload: IPayloadStatusChange = {
+      cpf: cfpValidate,
+      action: checkAction
+    }
+
+    this._carrierRepository.statusChange(payload)
     await this._accountService.statusChange(carrierStatusChange)
   }
 
-  private cpfValidate(cpf: string): string {
-    const cpfFormated = CPF.Strip(cpf)
-    const cpfValid = CPF.Validate(cpfFormated)
-    if (!cpfValid) {
-      throw new Error('CPF is not valid')
-    }
-    return cpfFormated
-  }
 }
 
 export { CarrierService }

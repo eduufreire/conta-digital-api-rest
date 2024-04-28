@@ -1,12 +1,16 @@
 import { knex } from '../database'
+import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, IPayloadExtractAccount, IResponseExtractAccount } from '../interfaces/account/IAccount'
+import { IAccountRepository } from '../interfaces/account/iAccountRepository'
+import { IPayloadStatusChange } from '../interfaces/carrier/ICarrier'
 
-class AccountModel {
-  async create(data) {
-    data.created_at = knex.fn.now(6)
-    await knex('carrier_account').insert(data)
+class AccountModel implements IAccountRepository{
+
+  async create(payload: IPayloadAccount): Promise<void> {
+    payload.created_at = knex.fn.now(6).toString()
+    await knex('carrier_account').insert(payload)
   }
 
-  async consultBalance(cpf: string) {
+  async consultBalance( cpf: string ): Promise<IPayloadAccountBalance> {
     await this.checkAccountExists(cpf)
     await this.checkAccountIsActive(cpf)
     return await knex('carrier_account')
@@ -14,22 +18,25 @@ class AccountModel {
       .select('balance', 'number', 'agency')
   }
 
-  async statusChange(dataUpdate) {
-    await this.checkAccountExists(dataUpdate.cpf)
+  async statusChange(payload: IPayloadStatusChange): Promise<void> {
+    await this.checkAccountExists(payload.cpf)
     await knex('carrier_account')
-      .where('fkCpf', dataUpdate.cpf)
-      .update('isActive', dataUpdate.action)
+      .where('fkCpf', payload.cpf)
+      .update('isActive', payload.action)
   }
 
-  async extractAccountBetweenDate(extract) {
-    await this.checkAccountExists(extract.cpf)
+  async extractAccountBetweenDate( payloadExtract: IPayloadExtractAccount ): Promise<Array<IExtractAccount>> {
+    
+    await this.checkAccountExists(payloadExtract.cpf)
+
     return await knex('transaction_account')
-      .where('fkCpf', extract.cpf)
+      .where('fkCpf', payloadExtract.cpf)
       .whereRaw('CAST(created_at as DATE) between ? and ?', [
-        extract.inicio,
-        extract.fim,
+        payloadExtract.startDate,
+        payloadExtract.endDate,
       ])
       .select('type', 'amount', 'created_at')
+
   }
 
   private async checkAccountExists(cpf: string) {

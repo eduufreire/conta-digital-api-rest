@@ -1,6 +1,7 @@
 import { z } from 'zod'
+import { IPayloadTransaction } from '../interfaces/transaction/ITransaction'
 
-export function checkBodyTransaction(req, res) {
+export function checkBodyTransaction(req, res): IPayloadTransaction | undefined {
   const checkTransactionBody = z.object({
     cpf: z.string().max(11),
     type: z.enum(['withdraw', 'deposit']),
@@ -14,6 +15,13 @@ export function checkBodyTransaction(req, res) {
       error: _body.error.issues[0],
     })
   } else {
-    return _body.data
+
+    let payload: IPayloadTransaction = {
+      cpf: _body.data.cpf,
+      type: _body.data.type,
+      amount: _body.data.amount
+    }
+
+    return payload
   }
 }

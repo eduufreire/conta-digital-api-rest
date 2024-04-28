@@ -1,26 +1,37 @@
 import express from 'express'
+import moment from 'moment-timezone'
+import z from 'zod'
+
 import { checkParamCpfIsValid } from '../middlewares/checkParamCpfIsValid'
 import { AccountService } from '../services/account'
 import { checkBodyUpdateIsValid } from '../middlewares/checkBodyUpdateIsValid'
 import { checkBodyTransaction } from '../middlewares/checkBodyTransaction'
-
-import moment from 'moment-timezone'
 import { TransactionService } from '../services/transacoes'
+import { IPayloadAccountBalance, ICheckExtractAccount } from '../interfaces/account/IAccount'
+import { AccountModel } from '../models/account'
+import { TransactionModel } from '../models/transacoes'
 
-import z from 'zod'
+
 
 const router = express.Router()
-const accountService = new AccountService()
-const transactionService = new TransactionService()
+
+const accountService = new AccountService(
+  new AccountModel()
+)
+
+const transactionService = new TransactionService(
+  new TransactionModel()
+)
+
 
 router.get('/balance/:cpf', async (req, res) => {
   try {
     const cpfValid = checkParamCpfIsValid(req, res)
-    let result
+
     if (cpfValid !== undefined) {
-      result = await accountService.balance(cpfValid)
+      let result: IPayloadAccountBalance = await accountService.balance(cpfValid)
+      res.status(200).send(result)
     }
-    res.status(200).send(result)
   } catch (err) {
     res.status(404).send({
       error: err.message,
@@ -32,25 +43,27 @@ router.get('/extract/:cpf', async (req, res) => {
   try {
     const cpfValid = checkParamCpfIsValid(req, res)
 
-    const createQueryParamsValid = z.coerce.date()
+    // validando se as datas passadas são validas
+    const dateQueryParamsValid = z.coerce.date()
+    const validDatestart = dateQueryParamsValid.safeParse(req.query.inicio,).success
+    const validDateEnd = dateQueryParamsValid.safeParse(req.query.fim).success
 
-    const validDateInicio = createQueryParamsValid.safeParse(
-      req.query.inicio,
-    ).success
-    const validDateFim = createQueryParamsValid.safeParse(req.query.fim).success
-
-    if (!validDateInicio || !validDateFim) {
+    if (!validDatestart || !validDateEnd) {
       throw new Error('Invalid date')
     }
 
-    const extractDTO = {
-      cpf: cpfValid,
-      inicio: req.query.inicio,
-      fim: req.query.fim,
+    if (cpfValid !== undefined) {
+
+      let payloadExtractAccount: ICheckExtractAccount = {
+        cpf: cpfValid,
+        startDate: req.query.inicio,
+        endDate: req.query.fim,
+      }
+
+      const response = await accountService.extractAccountBetweenDate(payloadExtractAccount)
+      res.status(response.status).send(response.data)
     }
 
-    const response = await accountService.extractAccount(extractDTO)
-    res.status(200).send(response)
   } catch (err) {
     res.status(400).send({
       error: err.message,
@@ -64,8 +77,8 @@ router.put('/status-change', async (req, res) => {
 
     if (bodyData !== undefined) {
       await accountService.statusChange(bodyData)
+      res.status(201).send()
     }
-    res.status(201).send()
   } catch (err) {
     res.status(400).send({
       error: err.message,
@@ -76,17 +89,17 @@ router.put('/status-change', async (req, res) => {
 router.post('/transaction', async (req, res) => {
   try {
     const bodyData = checkBodyTransaction(req, res)
-    await transactionService.create(bodyData)
-    res.status(200).send('ok')
+
+    if(bodyData !== undefined){
+      await transactionService.create(bodyData)
+      res.status(201).send()
+    }
+
   } catch (err) {
     res.status(400).send({
       error: err.message,
     })
   }
-})
-
-router.get('/teste', (req, res) => {
-  console.log(moment.tz('America/Sao_Paulo').format('YYYY-MM-DD'))
 })
 
 export default router

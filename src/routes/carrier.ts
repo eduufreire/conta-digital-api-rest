@@ -1,22 +1,26 @@
 import express from 'express'
 import { CarrierService } from '../services/carrier'
-import { checkBodyIsValid } from '../middlewares/checkBodyCreateIsValid'
+import { checkBodyCreateIsValid } from '../middlewares/checkBodyCreateIsValid'
 import { checkBodyUpdateIsValid } from '../middlewares/checkBodyUpdateIsValid'
-import { CarrierData, CarrierStatusChange } from '../interfaces/Carrier'
+import { ICarrierData, ICarrierStatusChange } from '../interfaces/carrier/ICarrier'
 import { CarrierModel } from '../models/carrier'
 import { AccountService } from '../services/account'
+import { AccountModel } from '../models/account'
 
 const router = express.Router()
+
+const accountModel = new AccountModel()
+
 const carrierService = new CarrierService(
   new CarrierModel(),
-  new AccountService(),
+  new AccountService(accountModel),
 )
 
 router.post('/', async (req, res) => {
   try {
-    const bodyData = checkBodyIsValid(req, res)
+    const bodyData = checkBodyCreateIsValid(req, res)
 
-    let carrierData: CarrierData
+    let carrierData: ICarrierData
     if (bodyData !== undefined) {
       carrierData = {
         cpf: bodyData.cpf,
@@ -41,7 +45,7 @@ router.put('/status-change', async (req, res) => {
   try {
     const bodyData = checkBodyUpdateIsValid(req, res)
 
-    let carrierStatusChange: CarrierStatusChange
+    let carrierStatusChange: ICarrierStatusChange
     if(bodyData !== undefined){
       carrierStatusChange = {
         cpf: bodyData?.cpf,

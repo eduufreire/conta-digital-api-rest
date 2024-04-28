@@ -1,9 +1,9 @@
 import { knex } from '../database'
-import { CarrierData, CarrierStatusChange } from '../interfaces/Carrier'
-import { CarrierRepository } from '../interfaces/CarrierRepository'
+import { ICarrierData, ICarrierStatusChange, IPayloadStatusChange } from '../interfaces/carrier/ICarrier'
+import { ICarrierRepository } from '../interfaces/carrier/ICarrierRepository'
 
-class CarrierModel implements CarrierRepository {
-  async create(carrierData: CarrierData) {
+class CarrierModel implements ICarrierRepository {
+  async create(carrierData: ICarrierData) {
     await this.verifyCpfIsRegistred(carrierData.cpf)
     await knex('carrier').insert({
       name: carrierData.nome,
@@ -13,11 +13,11 @@ class CarrierModel implements CarrierRepository {
     })
   }
 
-  async statusChange(carrierStatusChange: CarrierStatusChange) {
-    await this.checkCpfExists(carrierStatusChange.cpf)
+  async statusChange(payload: IPayloadStatusChange) {
+    await this.verifyCpfIsRegistred(payload.cpf)
     await knex('carrier')
-      .where('cpf', carrierStatusChange.cpf)
-      .update('isActive', carrierStatusChange.action)
+      .where('cpf', payload.cpf)
+      .update('isActive', payload.action)
   }
 
   private async verifyCpfIsRegistred(cpf: string) {
@@ -27,13 +27,6 @@ class CarrierModel implements CarrierRepository {
     }
   }
 
-  private async checkCpfExists(cpf: string) {
-    const response = await knex('carrier').where('cpf', cpf)
-    if (response.length === 0) {
-      console.log('response', response)
-      throw new Error('CPF not registered')
-    }
-  }
 }
 
 export { CarrierModel }
