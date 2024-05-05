@@ -29,6 +29,8 @@ class TransactionModel implements ITransactionRepository{
 
     const currentBalance: number = await this.getCurrentBalance(payload.cpf)
 
+    console.log(currentBalance)
+
     const totalBalance =
       payload.type === 'withdraw'
         ? payload.amount - currentBalance
@@ -45,7 +47,7 @@ class TransactionModel implements ITransactionRepository{
       .where('fkCpf', cpf)
       .select('balance')
 
-    return parseFloat(response[0])
+    return parseFloat(response[0].balance)
   }
 
   private async checkAccountExists(cpf: string) {

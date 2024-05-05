@@ -3,7 +3,7 @@ export interface IPayloadAccount {
     number: string
     agency: string
     balance: number,
-    created_at: string
+    created_at: any
     isActive: 0 | 1,
 }
 

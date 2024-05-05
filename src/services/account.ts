@@ -49,7 +49,7 @@ class AccountService {
   async extractAccountBetweenDate(payloadExtract: ICheckExtractAccount) {
     payloadExtract.cpf = cpfValidate(payloadExtract.cpf)
 
-    let listTransactionAccount: Array<IExtractAccount> = await accountModel.extractAccountBetweenDate(payloadExtract)
+    let listTransactionAccount: Array<IExtractAccount> = await this._accountRepository.extractAccountBetweenDate(payloadExtract)
 
     let response: IResponseExtractAccount = {
       status: 0,

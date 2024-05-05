@@ -20,8 +20,13 @@ class CarrierService {
   async create(carrierData: ICarrierData) {
     carrierData.cpf = cpfValidate(carrierData.cpf)
 
-    await this._carrierRepository.create(carrierData)
-    await this._accountService.create(carrierData.cpf)
+    try{
+      await this._carrierRepository.create(carrierData)
+      await this._accountService.create(carrierData.cpf)
+      return 200
+    } catch(err) {
+      return err
+    }
 
   }
 

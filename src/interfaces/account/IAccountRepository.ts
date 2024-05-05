@@ -1,5 +1,5 @@
 import { IPayloadStatusChange } from "../carrier/ICarrier"
-import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, IPayloadExtractAccount } from "./IAccount"
+import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, ICheckExtractAccount } from "./IAccount"
 
 export interface IAccountRepository {
     create(cpf: IPayloadAccount): Promise<void>
@@ -8,5 +8,5 @@ export interface IAccountRepository {
 
     statusChange(payload: IPayloadStatusChange): Promise<void>
 
-    extractAccountBetweenDate(payloadExtract: IPayloadExtractAccount): Promise<Array<IExtractAccount>>
+    extractAccountBetweenDate(payloadExtract: ICheckExtractAccount): Promise<Array<IExtractAccount>>
 }

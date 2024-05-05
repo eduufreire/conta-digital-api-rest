@@ -1,12 +1,12 @@
 import { knex } from '../database'
-import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, IPayloadExtractAccount, IResponseExtractAccount } from '../interfaces/account/IAccount'
+import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, ICheckExtractAccount, IResponseExtractAccount } from '../interfaces/account/IAccount'
 import { IAccountRepository } from '../interfaces/account/iAccountRepository'
 import { IPayloadStatusChange } from '../interfaces/carrier/ICarrier'
 
 class AccountModel implements IAccountRepository{
 
   async create(payload: IPayloadAccount): Promise<void> {
-    payload.created_at = knex.fn.now(6).toString()
+    payload.created_at = knex.fn.now(6)
     await knex('carrier_account').insert(payload)
   }
 
@@ -25,9 +25,11 @@ class AccountModel implements IAccountRepository{
       .update('isActive', payload.action)
   }
 
-  async extractAccountBetweenDate( payloadExtract: IPayloadExtractAccount ): Promise<Array<IExtractAccount>> {
+  async extractAccountBetweenDate( payloadExtract: ICheckExtractAccount ): Promise<Array<IExtractAccount>> {
     
     await this.checkAccountExists(payloadExtract.cpf)
+
+    console.log(payloadExtract)
 
     return await knex('transaction_account')
       .where('fkCpf', payloadExtract.cpf)

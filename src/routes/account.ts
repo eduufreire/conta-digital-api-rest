@@ -45,8 +45,8 @@ router.get('/extract/:cpf', async (req, res) => {
 
     // validando se as datas passadas são validas
     const dateQueryParamsValid = z.coerce.date()
-    const validDatestart = dateQueryParamsValid.safeParse(req.query.inicio,).success
-    const validDateEnd = dateQueryParamsValid.safeParse(req.query.fim).success
+    const validDatestart = dateQueryParamsValid.safeParse(req.query.startDate,).success
+    const validDateEnd = dateQueryParamsValid.safeParse(req.query.endDate).success
 
     if (!validDatestart || !validDateEnd) {
       throw new Error('Invalid date')
@@ -56,8 +56,8 @@ router.get('/extract/:cpf', async (req, res) => {
 
       let payloadExtractAccount: ICheckExtractAccount = {
         cpf: cpfValid,
-        startDate: req.query.inicio,
-        endDate: req.query.fim,
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
       }
 
       const response = await accountService.extractAccountBetweenDate(payloadExtractAccount)
@@ -100,6 +100,10 @@ router.post('/transaction', async (req, res) => {
       error: err.message,
     })
   }
+})
+
+router.get('/teste', ()=>{
+  console.log('edu')
 })
 
 export default router
