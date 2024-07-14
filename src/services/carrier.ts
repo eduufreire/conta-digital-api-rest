@@ -19,15 +19,8 @@ class CarrierService {
 
   async create(carrierData: ICarrierData) {
     carrierData.cpf = cpfValidate(carrierData.cpf)
-
-    try{
-      await this._carrierRepository.create(carrierData)
-      await this._accountService.create(carrierData.cpf)
-      return 200
-    } catch(err) {
-      return err
-    }
-
+    await this._carrierRepository.create(carrierData)
+    await this._accountService.create(carrierData.cpf)
   }
 
   async statusChange(carrierStatusChange: IStatusChange) {
@@ -39,7 +32,7 @@ class CarrierService {
       action: checkAction
     }
 
-    this._carrierRepository.statusChange(payload)
+    await this._carrierRepository.statusChange(payload)
     await this._accountService.statusChange(carrierStatusChange)
   }
 

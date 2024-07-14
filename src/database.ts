@@ -3,9 +3,9 @@ import { knex as setupConfig, Knex } from 'knex'
 export const config: Knex.Config = {
   client: 'mysql2',
   connection: {
-    host: 'connect-db',
+    host: 'localhost',
     user: 'root',
-    password: 'root',
+    password: 'urubu100',
     database: 'digital_account',
   },
 }

@@ -1,4 +1,4 @@
-import { ICarrierData, ICarrierStatusChange, IPayloadStatusChange } from './ICarrier'
+import { ICarrierData, IPayloadStatusChange } from './ICarrier'
 
 export interface ICarrierRepository {
   create(carrierData: ICarrierData): void

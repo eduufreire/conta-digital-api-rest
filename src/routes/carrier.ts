@@ -1,8 +1,8 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import { CarrierService } from '../services/carrier'
 import { checkBodyCreateIsValid } from '../middlewares/checkBodyCreateIsValid'
 import { checkBodyUpdateIsValid } from '../middlewares/checkBodyUpdateIsValid'
-import { ICarrierData, ICarrierStatusChange } from '../interfaces/carrier/ICarrier'
+import { ICarrierData, IStatusChange } from '../interfaces/carrier/ICarrier'
 import { CarrierModel } from '../models/carrier'
 import { AccountService } from '../services/account'
 import { AccountModel } from '../models/account'
@@ -16,52 +16,51 @@ const carrierService = new CarrierService(
   new AccountService(accountModel),
 )
 
-router.post('/', async (req, res) => {
-  try {
-    const bodyData = checkBodyCreateIsValid(req, res)
+router.post(
+  '/',
+  checkBodyCreateIsValid,
+  async (request: Request, response: Response) => {
 
-    let carrierData: ICarrierData
-    if (bodyData !== undefined) {
-      carrierData = {
-        cpf: bodyData.cpf,
-        nome: bodyData.nome,
+    try {
+      let carrierData: ICarrierData = {
+        cpf: request.body.cpf,
+        nome: request.body.nome,
       }
 
       await carrierService.create(carrierData)
+
+      response.status(201).send({
+        message: 'Created carrier',
+      })
+
+    } catch (err) {
+      response.status(err.status).send({
+        error: err.message,
+      })
     }
+  })
 
-    res.status(201).send({
-      message: 'Created carrier',
-    })
 
-  } catch (err) {
-    res.status(400).send({
-      error: err.message,
-    })
-  }
-})
+router.put(
+  '/status-change',
+  checkBodyUpdateIsValid,
+  async (request: Request, response: Response) => {
+    try {
 
-router.put('/status-change', async (req, res) => {
-  try {
-    const bodyData = checkBodyUpdateIsValid(req, res)
-
-    let carrierStatusChange: ICarrierStatusChange
-    if(bodyData !== undefined){
-      carrierStatusChange = {
-        cpf: bodyData?.cpf,
-        action: bodyData?.action,
+      let carrierStatusChange: IStatusChange = {
+        cpf: request.body.cpf,
+        action: request.body?.action,
       }
 
       await carrierService.statusChange(carrierStatusChange)
+      response.status(201).send()
+
+    } catch (err) {
+      response.status(err.status).send({
+        error: err.message,
+      })
     }
 
-    res.status(201).send()
-
-  } catch (err) {
-    res.status(404).send({
-      error: err.message,
-    })
-  }
-})
+  })
 
 export default router
