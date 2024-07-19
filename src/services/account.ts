@@ -33,7 +33,8 @@ class AccountService {
     return result
   }
 
-  async statusChange(payload: IStatusChange) {
+
+  async statusChange(payload: IStatusChange): Promise<void> {
 
     let cpfValid = cpfValidate(payload.cpf)
     let action: 0 | 1 = payload.action === 'enable' ? 1 : 0
@@ -41,12 +42,14 @@ class AccountService {
     let payloadValidate: IPayloadStatusChange = {
       cpf: cpfValid,
       action: action
-    }
+    } 
 
-    await this._accountRepository.statusChange(payloadValidate)
+   await this._accountRepository.statusChange(payloadValidate)
+
   }
 
-  async extractAccountBetweenDate(payloadExtract: ICheckExtractAccount) {
+
+  async extractAccountBetweenDate(payloadExtract: ICheckExtractAccount): Promise<IResponseExtractAccount> {
     payloadExtract.cpf = cpfValidate(payloadExtract.cpf)
 
     let listTransactionAccount: Array<IExtractAccount> = await this._accountRepository.extractAccountBetweenDate(payloadExtract)
@@ -65,7 +68,6 @@ class AccountService {
 
     return response
   }
-
 }
 
 export { AccountService }

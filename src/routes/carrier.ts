@@ -46,7 +46,6 @@ router.put(
   checkBodyUpdateIsValid,
   async (request: Request, response: Response) => {
     try {
-
       let carrierStatusChange: IStatusChange = {
         cpf: request.body.cpf,
         action: request.body?.action,

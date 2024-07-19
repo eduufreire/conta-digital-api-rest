@@ -2,6 +2,8 @@ import express from 'express'
 import morgan from 'morgan'
 
 import router from './routes/routes'
+import e from 'express'
+import { CustomException } from './errorHandler'
 
 export const app = express()
 
