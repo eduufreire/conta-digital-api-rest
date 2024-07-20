@@ -20,7 +20,6 @@ router.post(
   '/',
   checkBodyCreateIsValid,
   async (request: Request, response: Response) => {
-
     try {
       let carrierData: ICarrierData = {
         cpf: request.body.cpf,
@@ -28,7 +27,6 @@ router.post(
       }
 
       await carrierService.create(carrierData)
-
       response.status(201).send({
         message: 'Created carrier',
       })
@@ -38,7 +36,8 @@ router.post(
         error: err.message,
       })
     }
-  })
+  }
+)
 
 
 router.put(
@@ -60,6 +59,7 @@ router.put(
       })
     }
 
-  })
+  }
+)
 
 export default router

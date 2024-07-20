@@ -3,10 +3,10 @@ import { checkParamCpfIsValid } from '../middlewares/checkParamCpfIsValid'
 import { AccountService } from '../services/account'
 import { checkBodyUpdateIsValid } from '../middlewares/checkBodyUpdateIsValid'
 import { checkBodyTransaction } from '../middlewares/checkBodyTransaction'
-import { TransactionService } from '../services/transacoes'
+import { TransactionService } from '../services/transaction'
 import { IPayloadAccountBalance, ICheckExtractAccount, IExtractAccount } from '../interfaces/account/IAccount'
 import { AccountModel } from '../models/account'
-import { TransactionModel } from '../models/transacoes'
+import { TransactionModel } from '../models/transaction'
 import { checkDateIsValid } from '../middlewares/checkDateIsValid'
 import { IStatusChange } from '../interfaces/carrier/ICarrier'
 import { IPayloadTransaction } from '../interfaces/transaction/ITransaction'
@@ -108,9 +108,5 @@ router.post(
     }
   }
 )
-
-router.get('/teste', () => {
-  console.log('edu')
-})
 
 export default router

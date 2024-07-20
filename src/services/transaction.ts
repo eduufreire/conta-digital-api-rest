@@ -3,19 +3,20 @@ import { ITransactionRepository } from '../interfaces/transaction/ITransactioRep
 import { cpfValidate } from '../utils/CpfValidate'
 
 class TransactionService {
-
-  _transactionRepository: ITransactionRepository
-
-  constructor(transactionRepository: ITransactionRepository){
-    this._transactionRepository = transactionRepository
-  }
-
-  async create(payload: IPayloadTransaction): Promise<void> {
-    payload.cpf = cpfValidate(payload.cpf)
-    await this._transactionRepository.create(payload)
-  }
-
   
+  constructor(
+    private transactionRepository: ITransactionRepository
+  ) { }
+
+  async create(
+    payload: IPayloadTransaction
+  ): Promise<void> {
+
+    payload.cpf = cpfValidate(payload.cpf)
+    await this.transactionRepository.create(payload)
+    
+  }
+
 }
 
 export { TransactionService }

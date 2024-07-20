@@ -5,7 +5,10 @@ import { ICarrierRepository } from '../interfaces/carrier/ICarrierRepository'
 
 class CarrierModel implements ICarrierRepository {
 
-  async create(carrierData: ICarrierData) {
+  async create(
+    carrierData: ICarrierData
+  ): Promise<void> {
+
     await this.verifyCpfIsRegistred(carrierData.cpf)
     await knex('carrier').insert({
       name: carrierData.nome,
@@ -13,9 +16,12 @@ class CarrierModel implements ICarrierRepository {
       isActive: 1,
       created_at: knex.fn.now(6),
     })
+
   }
 
-  async statusChange(payload: IPayloadStatusChange) {
+  async statusChange(
+    payload: IPayloadStatusChange
+  ): Promise<void> {
     
     const response = await knex('carrier').where('cpf', payload.cpf)
     if (response.length === 0) {
@@ -25,13 +31,18 @@ class CarrierModel implements ICarrierRepository {
     await knex('carrier')
       .where('cpf', payload.cpf)
       .update('isActive', payload.action)
+
   }
 
-  private async verifyCpfIsRegistred(cpf: string) {
+  private async verifyCpfIsRegistred(
+    cpf: string
+  ): Promise<void> {
+    
     const response = await knex('carrier').where('cpf', cpf)
     if (response.length > 0) {
       throw new CustomException('CPF already registered', 404)
     }
+
   }
 
 }

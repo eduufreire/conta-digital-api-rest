@@ -2,10 +2,13 @@ import { knex } from '../database'
 import moment from 'moment-timezone'
 import { ITransactionRepository } from '../interfaces/transaction/ITransactioRepository'
 import { IPayloadTransaction } from '../interfaces/transaction/ITransaction'
+import { CustomException } from '../errorHandler'
 
 class TransactionModel implements ITransactionRepository{
 
-  async create(payload: IPayloadTransaction) {
+  async create(
+    payload: IPayloadTransaction
+  ): Promise<void> {
 
     await this.checkAccountExists(payload.cpf)
     await this.checkAccountIsActive(payload.cpf)
@@ -25,11 +28,11 @@ class TransactionModel implements ITransactionRepository{
     await this.updateBalance(payload)
   }
 
-  private async updateBalance(payload: IPayloadTransaction) {
+  private async updateBalance(
+    payload: IPayloadTransaction
+  ): Promise<void> {
 
     const currentBalance: number = await this.getCurrentBalance(payload.cpf)
-
-    console.log(currentBalance)
 
     const totalBalance =
       payload.type === 'withdraw'
@@ -39,32 +42,46 @@ class TransactionModel implements ITransactionRepository{
     await knex('carrier_account')
       .where('fkCpf', payload.cpf)
       .update('balance', totalBalance)
+
   }
 
-  private async getCurrentBalance(cpf: string): Promise<number> {
+  private async getCurrentBalance(
+    cpf: string
+  ): Promise<number> {
 
     const response: number = await knex('carrier_account')
       .where('fkCpf', cpf)
       .select('balance')
-
     return parseFloat(response[0].balance)
+
   }
 
-  private async checkAccountExists(cpf: string) {
+  private async checkAccountExists(
+    cpf: string
+  ): Promise<void> {
+
     const response = await knex('carrier_account').where('fkCpf', cpf)
     if (response.length === 0) {
-      throw new Error('Account not registered')
+      throw new CustomException('Account not registered', 404)
     }
+
   }
 
-  private async checkAccountIsActive(cpf: string) {
+  private async checkAccountIsActive(
+    cpf: string
+  ): Promise<void> {
+
     const response = await knex('carrier_account').where('fkCpf', cpf)
     if (response[0].isActive === 0) {
-      throw new Error('Account is not active')
+      throw new CustomException('Account is not active', 400)
     }
+
   }
 
-  private async checkDiaryLimit(transaction) {
+  private async checkDiaryLimit(
+    transaction: IPayloadTransaction
+  ): Promise<void> {
+
     const response = await knex('transaction_account')
       .where({
         fkCpf: transaction.cpf,
@@ -80,18 +97,23 @@ class TransactionModel implements ITransactionRepository{
       transaction.amount + response[0].transaction_diary
 
     if (sumAmountWithLimit >= 2000) {
-      throw new Error('Daily limit exceeded')
+      throw new CustomException('Daily limit exceeded', 400)
     }
+
   }
 
-  private async checkBalanceAccount(cpf: string, amount: number) {
+  private async checkBalanceAccount(
+    cpf: string, amount: number
+  ): Promise<void> {
+
     const response = await knex('carrier_account')
       .where('fkCpf', cpf)
       .select('balance')
 
     if (response[0].balance < amount) {
-      throw new Error('Insufficient funds')
+      throw new CustomException('Insufficient funds', 400)
     }
+
   }
 
 }

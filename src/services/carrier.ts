@@ -6,24 +6,25 @@ import { cpfValidate } from '../utils/CpfValidate'
 
 class CarrierService {
 
-  _carrierRepository: ICarrierRepository
-  _accountService: AccountService
-
   constructor(
-    carrierRepository: ICarrierRepository,
-    accountService: AccountService,
-  ) {
-    this._carrierRepository = carrierRepository
-    this._accountService = accountService
-  }
+    private carrierRepository: ICarrierRepository,
+    private accountService: AccountService,
+  ) { }
 
-  async create(carrierData: ICarrierData) {
+  async create(
+    carrierData: ICarrierData
+  ): Promise<void> {
+
     carrierData.cpf = cpfValidate(carrierData.cpf)
-    await this._carrierRepository.create(carrierData)
-    await this._accountService.create(carrierData.cpf)
+    await this.carrierRepository.create(carrierData)
+    await this.accountService.create(carrierData.cpf)
+
   }
 
-  async statusChange(carrierStatusChange: IStatusChange) {
+  async statusChange(
+    carrierStatusChange: IStatusChange
+  ): Promise<void> {
+
     let cfpValidate: string = cpfValidate(carrierStatusChange.cpf)
     let checkAction: 0 | 1 = carrierStatusChange.action == 'disable' ? 0 : 1
 
@@ -32,8 +33,9 @@ class CarrierService {
       action: checkAction
     }
 
-    await this._carrierRepository.statusChange(payload)
-    await this._accountService.statusChange(carrierStatusChange)
+    await this.carrierRepository.statusChange(payload)
+    await this.accountService.statusChange(carrierStatusChange)
+
   }
 
 }

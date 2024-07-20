@@ -7,9 +7,7 @@ class AccountService {
 
   constructor(
     private accountRepository: IAccountRepository
-  ) {
-    this.accountRepository = accountRepository
-  }
+  ) { }
 
   async create(
     cpf: string
