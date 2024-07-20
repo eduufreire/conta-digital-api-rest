@@ -1,16 +1,15 @@
 import express, { Request, Response } from 'express'
-
 import { checkParamCpfIsValid } from '../middlewares/checkParamCpfIsValid'
 import { AccountService } from '../services/account'
 import { checkBodyUpdateIsValid } from '../middlewares/checkBodyUpdateIsValid'
 import { checkBodyTransaction } from '../middlewares/checkBodyTransaction'
 import { TransactionService } from '../services/transacoes'
-import { IPayloadAccountBalance, ICheckExtractAccount, IResponseExtractAccount } from '../interfaces/account/IAccount'
+import { IPayloadAccountBalance, ICheckExtractAccount, IExtractAccount } from '../interfaces/account/IAccount'
 import { AccountModel } from '../models/account'
 import { TransactionModel } from '../models/transacoes'
 import { checkDateIsValid } from '../middlewares/checkDateIsValid'
 import { IStatusChange } from '../interfaces/carrier/ICarrier'
-
+import { IPayloadTransaction } from '../interfaces/transaction/ITransaction'
 
 
 const router = express.Router()
@@ -41,6 +40,7 @@ router.get(
   }
 )
 
+
 router.get(
   '/extract/:cpf',
   checkParamCpfIsValid,
@@ -54,8 +54,8 @@ router.get(
         endDate: request.query.endDate,
       }
 
-      const result: IResponseExtractAccount = await accountService.extractAccountBetweenDate(payloadExtractAccount)
-      response.status(result.status).send(result.data)
+      const result: Array<IExtractAccount> = await accountService.extractAccountBetweenDate(payloadExtractAccount)
+      response.status(200).send(result)
 
     } catch (err) {
       response.status(err.status).send({
@@ -89,22 +89,25 @@ router.put(
 
 
 router.post(
-  '/transaction', 
-  async (req, res) => {
-  try {
-    const bodyData = checkBodyTransaction(req, res)
+  '/transaction',
+  checkBodyTransaction,
+  async (request: Request, response: Response) => {
+    try {
+      let payload: IPayloadTransaction = {
+        cpf: request.body.cpf,
+        type: request.body.type,
+        amount: request.body.amount
+      }
 
-    if (bodyData !== undefined) {
-      await transactionService.create(bodyData)
-      res.status(201).send()
+      await transactionService.create(payload)
+      response.status(201).send()
+    } catch (err) {
+      response.status(400).send({
+        error: err.message,
+      })
     }
-
-  } catch (err) {
-    res.status(400).send({
-      error: err.message,
-    })
   }
-})
+)
 
 router.get('/teste', () => {
   console.log('edu')

@@ -1,17 +1,19 @@
-import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, ICheckExtractAccount, IResponseExtractAccount } from '../interfaces/account/IAccount'
+import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, ICheckExtractAccount } from '../interfaces/account/IAccount'
 import { IAccountRepository } from '../interfaces/account/iAccountRepository'
 import { IPayloadStatusChange, IStatusChange } from '../interfaces/carrier/ICarrier'
 import { cpfValidate } from '../utils/CpfValidate'
 
 class AccountService {
 
-  _accountRepository: IAccountRepository
-
-  constructor(accountRepository: IAccountRepository){
-    this._accountRepository = accountRepository
+  constructor(
+    private accountRepository: IAccountRepository
+  ) {
+    this.accountRepository = accountRepository
   }
 
-  async create(cpf: string): Promise<void> {
+  async create(
+    cpf: string
+  ): Promise<void> {
 
     const accountData: IPayloadAccount = {
       fkCpf: cpf,
@@ -21,20 +23,22 @@ class AccountService {
       created_at: '',
       isActive: 1,
     }
+    await this.accountRepository.create(accountData)
 
-    await this._accountRepository.create(accountData)
   }
 
+  async balance(
+    cpf: string
+  ): Promise<IPayloadAccountBalance> {
 
-  async balance(cpf: string): Promise<IPayloadAccountBalance> {
     const cpfFormated: string = cpfValidate(cpf)
+    return await this.accountRepository.consultBalance(cpfFormated)
 
-    let result: IPayloadAccountBalance = await this._accountRepository.consultBalance(cpfFormated)
-    return result
   }
 
-
-  async statusChange(payload: IStatusChange): Promise<void> {
+  async statusChange(
+    payload: IStatusChange
+  ): Promise<void> {
 
     let cpfValid = cpfValidate(payload.cpf)
     let action: 0 | 1 = payload.action === 'enable' ? 1 : 0
@@ -42,31 +46,19 @@ class AccountService {
     let payloadValidate: IPayloadStatusChange = {
       cpf: cpfValid,
       action: action
-    } 
+    }
 
-   await this._accountRepository.statusChange(payloadValidate)
+    await this.accountRepository.statusChange(payloadValidate)
 
   }
 
+  async extractAccountBetweenDate(
+    payloadExtract: ICheckExtractAccount
+  ): Promise<Array<IExtractAccount>> {
 
-  async extractAccountBetweenDate(payloadExtract: ICheckExtractAccount): Promise<IResponseExtractAccount> {
     payloadExtract.cpf = cpfValidate(payloadExtract.cpf)
+    return await this.accountRepository.extractAccountBetweenDate(payloadExtract)
 
-    let listTransactionAccount: Array<IExtractAccount> = await this._accountRepository.extractAccountBetweenDate(payloadExtract)
-
-    let response: IResponseExtractAccount = {
-      status: 0,
-      data: []
-    }
-
-    if(listTransactionAccount.length > 0){
-      response.status = 200
-      response.data = listTransactionAccount
-    } else {
-      response.status = 204
-    }
-
-    return response
   }
 }
 
