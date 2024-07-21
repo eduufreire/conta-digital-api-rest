@@ -27,16 +27,10 @@ router.get(
   '/balance/:cpf',
   checkParamCpfIsValid,
   async (request: Request, response: Response) => {
-    try {
 
-      let result: IPayloadAccountBalance = await accountService.balance(request.params.cpf)
-      response.status(200).send(result)
+    let result: IPayloadAccountBalance = await accountService.balance(request.params.cpf)
+    response.status(200).send(result)
 
-    } catch (err) {
-      response.status(404).send({
-        error: err.message,
-      })
-    }
   }
 )
 
@@ -46,22 +40,16 @@ router.get(
   checkParamCpfIsValid,
   checkDateIsValid,
   async (request: Request, response: Response) => {
-    try {
 
-      let payloadExtractAccount: ICheckExtractAccount = {
-        cpf: request.params.cpf,
-        startDate: request.query.startDate,
-        endDate: request.query.endDate,
-      }
-
-      const result: Array<IExtractAccount> = await accountService.extractAccountBetweenDate(payloadExtractAccount)
-      response.status(200).send(result)
-
-    } catch (err) {
-      response.status(err.status).send({
-        error: err.message,
-      })
+    let payloadExtractAccount: ICheckExtractAccount = {
+      cpf: request.params.cpf,
+      startDate: request.query.startDate,
+      endDate: request.query.endDate,
     }
+
+    const result: Array<IExtractAccount> = await accountService.extractAccountBetweenDate(payloadExtractAccount)
+    response.status(200).send(result)
+
   }
 )
 
@@ -70,20 +58,14 @@ router.put(
   '/status-change',
   checkBodyUpdateIsValid,
   async (request: Request, response: Response) => {
-    try {
 
-      let payload: IStatusChange = {
-        action: request.body.action,
-        cpf: request.body.cpf
-      }
-      await accountService.statusChange(payload)
-      response.status(201).send()
-
-    } catch (err) {
-      response.status(err.status).send({
-        error: err.message,
-      })
+    let payload: IStatusChange = {
+      action: request.body.action,
+      cpf: request.body.cpf
     }
+    await accountService.statusChange(payload)
+    response.status(201).send()
+
   }
 )
 
@@ -92,20 +74,16 @@ router.post(
   '/transaction',
   checkBodyTransaction,
   async (request: Request, response: Response) => {
-    try {
-      let payload: IPayloadTransaction = {
-        cpf: request.body.cpf,
-        type: request.body.type,
-        amount: request.body.amount
-      }
 
-      await transactionService.create(payload)
-      response.status(201).send()
-    } catch (err) {
-      response.status(400).send({
-        error: err.message,
-      })
+    let payload: IPayloadTransaction = {
+      cpf: request.body.cpf,
+      type: request.body.type,
+      amount: request.body.amount
     }
+
+    await transactionService.create(payload)
+    response.status(201).send()
+
   }
 )
 

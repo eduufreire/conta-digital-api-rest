@@ -20,22 +20,16 @@ router.post(
   '/',
   checkBodyCreateIsValid,
   async (request: Request, response: Response) => {
-    try {
-      let carrierData: ICarrierData = {
-        cpf: request.body.cpf,
-        nome: request.body.nome,
-      }
-
-      await carrierService.create(carrierData)
-      response.status(201).send({
-        message: 'Created carrier',
-      })
-
-    } catch (err) {
-      response.status(err.status).send({
-        error: err.message,
-      })
+    let carrierData: ICarrierData = {
+      cpf: request.body.cpf,
+      nome: request.body.nome,
     }
+
+    await carrierService.create(carrierData)
+
+    response.status(201).send({
+      message: 'Created carrier',
+    })
   }
 )
 
@@ -44,21 +38,15 @@ router.put(
   '/status-change',
   checkBodyUpdateIsValid,
   async (request: Request, response: Response) => {
-    try {
-      let carrierStatusChange: IStatusChange = {
-        cpf: request.body.cpf,
-        action: request.body?.action,
-      }
 
-      await carrierService.statusChange(carrierStatusChange)
-      response.status(201).send()
-
-    } catch (err) {
-      response.status(err.status).send({
-        error: err.message,
-      })
+    let carrierStatusChange: IStatusChange = {
+      cpf: request.body.cpf,
+      action: request.body?.action,
     }
 
+    await carrierService.statusChange(carrierStatusChange)
+
+    response.status(201).send()
   }
 )
 

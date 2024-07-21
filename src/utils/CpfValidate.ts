@@ -1,5 +1,5 @@
 import { CPF } from '@julioakira/cpf-cnpj-utils'
-import { CustomException } from '../errorHandler'
+import { CustomException } from '../helpers/customException'
 
 export function cpfValidate(cpf: string): string {
     const cpfFormated = CPF.Strip(cpf)

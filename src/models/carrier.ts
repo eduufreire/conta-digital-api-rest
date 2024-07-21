@@ -1,5 +1,5 @@
 import { knex } from '../database'
-import { CustomException } from '../errorHandler'
+import { CustomException } from '../helpers/customException'
 import { ICarrierData, IPayloadStatusChange } from '../interfaces/carrier/ICarrier'
 import { ICarrierRepository } from '../interfaces/carrier/ICarrierRepository'
 

@@ -1,9 +1,9 @@
-import express from 'express'
+import 'express-async-errors'
+import express, { NextFunction, Request, Response } from 'express'
 import morgan from 'morgan'
 
 import router from './routes/routes'
-import e from 'express'
-import { CustomException } from './errorHandler'
+import { errorMiddleware } from './middlewares/errorMiddleware'
 
 export const app = express()
 
@@ -12,4 +12,6 @@ app.use(express.json())
 app.use(morgan('dev'))
 
 app.use(router)
+
+app.use(errorMiddleware)
 

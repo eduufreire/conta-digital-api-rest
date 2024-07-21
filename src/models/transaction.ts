@@ -2,7 +2,7 @@ import { knex } from '../database'
 import moment from 'moment-timezone'
 import { ITransactionRepository } from '../interfaces/transaction/ITransactioRepository'
 import { IPayloadTransaction } from '../interfaces/transaction/ITransaction'
-import { CustomException } from '../errorHandler'
+import { CustomException } from '../helpers/customException'
 
 class TransactionModel implements ITransactionRepository{
 
