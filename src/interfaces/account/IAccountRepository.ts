@@ -2,7 +2,7 @@ import { IPayloadStatusChange } from "../carrier/ICarrier"
 import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, ICheckExtractAccount } from "./IAccount"
 
 export interface IAccountRepository {
-    create(cpf: IPayloadAccount): Promise<void>
+    create(payload: IPayloadAccount): Promise<void>
     
     consultBalance(cpf: string): Promise<IPayloadAccountBalance>
 

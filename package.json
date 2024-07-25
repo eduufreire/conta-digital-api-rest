@@ -6,25 +6,27 @@
   "scripts": {
     "test": "jest",
     "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts"
+    "start": "tsx src/server.ts",
+    "test:uni": "jest ./__tests__/services/account.spec.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-typescript": "^7.24.7",
     "@jest/globals": "^29.7.0",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
     "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
     "morgan": "^1.10.0",
-    "ts-jest": "^29.1.2",
+    "ts-jest": "^29.2.3",
     "tsx": "^4.7.1"
   },
   "dependencies": {
     "@julioakira/cpf-cnpj-utils": "^1.4.2",
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
-    "jest": "^29.7.0",
     "knex": "^3.1.0",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",

@@ -1,5 +1,5 @@
 import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, ICheckExtractAccount } from '../interfaces/account/IAccount'
-import { IAccountRepository } from '../interfaces/account/iAccountRepository'
+import { IAccountRepository } from '../interfaces/account/IAccountRepository'
 import { IPayloadStatusChange, IStatusChange } from '../interfaces/carrier/ICarrier'
 import { cpfValidate } from '../utils/CpfValidate'
 

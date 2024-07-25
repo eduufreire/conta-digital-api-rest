@@ -8,7 +8,6 @@ export class CustomException extends Error {
     ) {
         super(message)
         this.statusCode = statusCode
-        console.log('STATUUUUUUUUUUUUS', this.statusCode)
     }
 
 }

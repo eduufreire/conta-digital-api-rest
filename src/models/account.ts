@@ -1,7 +1,7 @@
 import { knex } from '../database'
 import { CustomException } from '../helpers/customException'
 import { IExtractAccount, IPayloadAccount, IPayloadAccountBalance, ICheckExtractAccount } from '../interfaces/account/IAccount'
-import { IAccountRepository } from '../interfaces/account/iAccountRepository'
+import { IAccountRepository } from '../interfaces/account/IAccountRepository'
 import { IPayloadStatusChange } from '../interfaces/carrier/ICarrier'
 
 class AccountModel implements IAccountRepository {
