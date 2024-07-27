@@ -49,7 +49,7 @@ class TransactionModel implements ITransactionRepository{
     cpf: string
   ): Promise<number> {
 
-    const response: number = await knex('carrier_account')
+    const response: any = await knex('carrier_account')
       .where('fkCpf', cpf)
       .select('balance')
     return parseFloat(response[0].balance)
@@ -82,7 +82,7 @@ class TransactionModel implements ITransactionRepository{
     transaction: IPayloadTransaction
   ): Promise<void> {
 
-    const response = await knex('transaction_account')
+    const response: any = await knex('transaction_account')
       .where({
         fkCpf: transaction.cpf,
         type: 'withdraw',

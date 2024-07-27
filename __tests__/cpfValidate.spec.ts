@@ -1,7 +1,7 @@
 import {expect, test} from '@jest/globals';
 import { cpfValidate } from '../src/utils/CpfValidate';
 
-describe('Test validade cpf', () => {
+describe('#CPF Validate', () => {
 
     test('CPF empty', () => {
         function testCpfValidate(){

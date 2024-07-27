@@ -7,7 +7,7 @@
     "test": "jest",
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "test:uni": "jest ./__tests__/services/account.spec.ts"
+    "test:uni": "jest ./__tests__/services/carrier.spec.ts"
   },
   "keywords": [],
   "author": "",
