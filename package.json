@@ -7,7 +7,7 @@
     "test": "jest",
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
-    "test:uni": "jest ./__tests__/services/carrier.spec.ts"
+    "test:uni": "jest --detectOpenHandles ./__tests__/integrations/account.spec.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,9 +17,11 @@
     "@jest/globals": "^29.7.0",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.12",
+    "@types/morgan": "^1.9.9",
     "@types/supertest": "^6.0.2",
     "jest": "^29.7.0",
     "morgan": "^1.10.0",
+    "supertest": "^7.0.0",
     "ts-jest": "^29.2.3",
     "tsx": "^4.7.1"
   },
@@ -31,7 +33,6 @@
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.45",
     "mysql2": "^3.9.3",
-    "supertest": "^7.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.3",
     "uuid": "^9.0.1",

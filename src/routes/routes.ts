@@ -1,6 +1,6 @@
 import express from 'express'
-import carriers from './carrier.ts'
-import accounts from './account.ts'
+import carriers from './carrier'
+import accounts from './account'
 
 const router = express.Router()
 

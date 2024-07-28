@@ -15,8 +15,8 @@ export interface IPayloadAccountBalance {
 
 export interface ICheckExtractAccount {
     cpf: string
-    startDate: string,
-    endDate: string,
+    startDate: string | undefined,
+    endDate: string | undefined,
 }
 export interface IExtractAccount {
     type: 'withdraw' | 'deposit'

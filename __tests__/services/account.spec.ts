@@ -1,6 +1,6 @@
 import { afterAll, jest } from '@jest/globals';
 import { AccountService } from '../../src/services/account';
-import { accountModelMocked } from '../../mocks/dependencies';
+import { accountModelMocked } from '../utils/dependencies';
 
 describe('#Account Service', () => {
 

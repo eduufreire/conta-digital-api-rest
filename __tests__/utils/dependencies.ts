@@ -1,8 +1,8 @@
 import { jest } from "@jest/globals";
-import { ICarrierRepository } from "../src/interfaces/carrier/ICarrierRepository";
-import { ITransactionRepository } from "../src/interfaces/transaction/ITransactioRepository";
-import { IAccountRepository } from "../src/interfaces/account/IAccountRepository";
-import { IExtractAccount, IPayloadAccountBalance } from "../src/interfaces/account/IAccount";
+import { ICarrierRepository } from "../../src/interfaces/carrier/ICarrierRepository";
+import { ITransactionRepository } from "../../src/interfaces/transaction/ITransactioRepository";
+import { IAccountRepository } from "../../src/interfaces/account/IAccountRepository";
+import { IExtractAccount, IPayloadAccountBalance } from "../../src/interfaces/account/IAccount";
 
 export const accountModelMocked: jest.Mocked<IAccountRepository> = {
     create: jest

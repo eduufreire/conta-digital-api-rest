@@ -43,8 +43,8 @@ router.get(
 
     let payloadExtractAccount: ICheckExtractAccount = {
       cpf: request.params.cpf,
-      startDate: request.query.startDate,
-      endDate: request.query.endDate,
+      startDate: request.query.startDate?.toString(),
+      endDate: request.query.endDate?.toString(),
     }
 
     const result: Array<IExtractAccount> = await accountService.extractAccountBetweenDate(payloadExtractAccount)

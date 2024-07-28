@@ -1,6 +1,6 @@
 import {jest} from '@jest/globals';
 import { TransactionService } from "../../src/services/transaction"
-import { transactionModelMocked } from '../../mocks/dependencies';
+import { transactionModelMocked } from '../utils/dependencies';
 
 describe('#Transaction Service', () => {
 

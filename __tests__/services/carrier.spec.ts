@@ -1,7 +1,7 @@
 import { jest } from "@jest/globals";
 import { CarrierService } from "../../src/services/carrier";
 import { AccountService } from "../../src/services/account";
-import { accountModelMocked, carrierModelMocked } from "../../mocks/dependencies";
+import { accountModelMocked, carrierModelMocked } from "../utils/dependencies";
 
 jest.mock('../../src/services/account.ts')
 
