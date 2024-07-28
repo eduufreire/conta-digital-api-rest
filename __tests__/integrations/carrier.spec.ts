@@ -9,7 +9,7 @@ describe("Carrier Integration Tests", () => {
 
   it('Create new carrier', async () => {
     const response = await request(app).post("/carriers/").send({
-      cpf: "88778720044",
+      cpf: "24783697027",
       nome: "Teste de Integração",
     });
 
@@ -29,11 +29,12 @@ describe("Carrier Integration Tests", () => {
   it('Status change', async () => {
     const response = await request(app)
         .put("/carriers/status-change").send({
-            cpf: '88778720044',
+            cpf: '24783697027',
             action: 'enable',
         });
     expect(response.statusCode).toEqual(201)
   })
 
+  
 
 });
