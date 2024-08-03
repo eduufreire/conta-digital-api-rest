@@ -1,5 +1,5 @@
 import 'express-async-errors'
-import express, { NextFunction, Request, Response } from 'express'
+import express from 'express'
 import morgan from 'morgan'
 
 import router from './routes/routes'
@@ -14,4 +14,3 @@ app.use(morgan('dev'))
 app.use(router)
 
 app.use(errorMiddleware)
-
