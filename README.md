@@ -1,5 +1,5 @@
 
-# Desafio API Rest
+# Desafio API REST - Conta Digital
 
 API desenvolvida para aprimorar o meu conhecimento em algumas tecnologias e me desafiar a entregar um bom projeto sozinho.
 
@@ -11,7 +11,6 @@ API desenvolvida para aprimorar o meu conhecimento em algumas tecnologias e me d
 - **Tecnologias usadas:** Typescript, Express, MySQL, Knex, Jest
 - **Conceitos aplicados:** Inversão de dependência, middlewares para checagem de dados, manipulação de erros, Query Builder, Testes unitários e de integração
 
-#
 ## Documentação da API
 
 #### Cadastrar um novo portador:
